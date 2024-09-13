@@ -2,19 +2,21 @@
   "name": "pennerooney_cookbook_api",
   "version": "1.0.0",
   "description": "api for the pennerooney_cookbook",
-  "main": "index.ts",
+  "main": "build/api/index.js",
   "scripts": {
-    "start": "npx tsc index.ts && node index.js",
+    "start": "npx tsc && node .",
     "test": "test"
   },
   "author": "crazyapple48",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.0",
-    "typescript": "^5.6.2"
+    "express": "^4.21.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^22.5.4"
+    "@types/node": "^22.5.4",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.2"
   }
 }
