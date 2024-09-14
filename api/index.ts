@@ -1,5 +1,6 @@
 import express from "express";
 import { Recipe } from "./../types/Recipe";
+require("dotenv").config();
 
 const app = express();
 
@@ -32,12 +33,21 @@ const recipes: Recipes = [
   },
 ];
 
-app.get("/", (req, res) => {
+app.get("/recipes", (req, res) => {
   res.send(recipes);
 });
 
-app.get("/api/courses", (req, res) => {
-  res.send([1, 2, 3, 4]);
+app.get("/recipes/:id", (req, res) => {
+  const recipe = recipes.find((r) => {
+    r.id === parseInt(req.params.id);
+  });
+
+  if (recipe) {
+    res.send(recipe);
+  } else {
+    res.status(404).send("The course with given ID was not found");
+  }
 });
 
-app.listen(3000, () => console.log("Listening on port 3000"));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}...`));

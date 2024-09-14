@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+require("dotenv").config();
 const app = (0, express_1.default)();
 const recipes = [
     {
@@ -31,11 +32,20 @@ const recipes = [
         Ingredients: "List of ingredients",
     },
 ];
-app.get("/", (req, res) => {
+app.get("/recipes", (req, res) => {
     res.send(recipes);
 });
-app.get("/api/courses", (req, res) => {
-    res.send([1, 2, 3, 4]);
+app.get("/recipes/:id", (req, res) => {
+    const recipe = recipes.find((r) => {
+        r.id === parseInt(req.params.id);
+    });
+    if (recipe) {
+        res.send(recipe);
+    }
+    else {
+        res.status(404).send("The course with given ID was not found");
+    }
 });
-app.listen(3000, () => console.log("Listening on port 3000"));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}...`));
 //# sourceMappingURL=index.js.map
