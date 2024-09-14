@@ -6,41 +6,41 @@ import Joi from "joi";
 type Recipes = Recipe[];
 
 const schema = Joi.object({
-  Title: Joi.string().min(3).required(),
-  Method: Joi.string().required(),
-  Function: Joi.string().required(),
-  Genre: Joi.string().required(),
-  Source: Joi.string().optional(),
-  Page: Joi.number().optional(),
-  Rating: Joi.number().min(1).max(5).required(),
-  Recipe: Joi.string().required(),
-  Ingredients: Joi.string().required(),
+  title: Joi.string().min(3).required(),
+  method: Joi.string().required(),
+  function: Joi.string().required(),
+  genre: Joi.string().required(),
+  source: Joi.string().optional(),
+  page: Joi.number().optional(),
+  rating: Joi.number().min(1).max(5).required(),
+  recipe: Joi.string().required(),
+  ingredients: Joi.string().required(),
 });
 
 const recipes: Recipes = [
   {
     id: 0,
-    Title: "Corn",
-    Method: "InstaPot",
-    Function: "Side",
-    Genre: "American",
-    Source: "Fresh from the Vegetarian Garden",
-    Page: 192,
-    Rating: 5,
-    Recipe: "List of instructions",
-    Ingredients: "List of ingredients",
+    title: "Corn",
+    method: "InstaPot",
+    function: "Side",
+    genre: "American",
+    source: "Fresh from the Vegetarian Garden",
+    page: 192,
+    rating: 5,
+    recipe: "List of instructions",
+    ingredients: "List of ingredients",
   },
   {
     id: 1,
-    Title: "Beans",
-    Method: "Pots",
-    Function: "Side",
-    Genre: "American",
-    Source: null,
-    Page: null,
-    Rating: 3,
-    Recipe: "List of instructions",
-    Ingredients: "List of ingredients",
+    title: "Beans",
+    method: "Pots",
+    function: "Side",
+    genre: "American",
+    source: null,
+    page: null,
+    rating: 3,
+    recipe: "List of instructions",
+    ingredients: "List of ingredients",
   },
 ];
 
@@ -65,15 +65,15 @@ router.post("/", (req, res) => {
 
   const recipe: Recipe = {
     id: recipes.length + 1,
-    Title: req.body.Title,
-    Method: req.body.Method,
-    Function: req.body.Function,
-    Genre: req.body.Genre,
-    Source: req.body.Source,
-    Page: req.body.Page,
-    Rating: req.body.Rating,
-    Recipe: req.body.Recipe,
-    Ingredients: req.body.Ingredients,
+    title: req.body.title,
+    method: req.body.method,
+    function: req.body.function,
+    genre: req.body.genre,
+    source: req.body.source,
+    page: req.body.page,
+    rating: req.body.rating,
+    recipe: req.body.recipe,
+    ingredients: req.body.ingredients,
   };
 
   recipes.push(recipe);
@@ -91,15 +91,15 @@ router.put("/:id", (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  if (recipe!.Title) recipe!.Title = req.body.Title;
-  if (recipe!.Method) recipe!.Method = req.body.Method;
-  if (recipe!.Function) recipe!.Function = req.body.Function;
-  if (recipe!.Genre) recipe!.Genre = req.body.Genre;
-  if (recipe!.Source) recipe!.Source = req.body.Source;
-  if (recipe!.Page) recipe!.Page = req.body.Page;
-  if (recipe!.Rating) recipe!.Rating = req.body.Rating;
-  if (recipe!.Recipe) recipe!.Recipe = req.body.Recipe;
-  if (recipe!.Ingredients) recipe!.Ingredients = req.body.Ingredients;
+  if (recipe!.title) recipe!.title = req.body.title;
+  if (recipe!.method) recipe!.method = req.body.method;
+  if (recipe!.function) recipe!.function = req.body.function;
+  if (recipe!.genre) recipe!.genre = req.body.genre;
+  if (recipe!.source) recipe!.source = req.body.source;
+  if (recipe!.page) recipe!.page = req.body.page;
+  if (recipe!.rating) recipe!.rating = req.body.rating;
+  if (recipe!.recipe) recipe!.recipe = req.body.recipe;
+  if (recipe!.ingredients) recipe!.ingredients = req.body.ingredients;
 
   res.send(recipe);
 });

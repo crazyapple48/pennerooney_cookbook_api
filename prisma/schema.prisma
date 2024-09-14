@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model recipes {
+  id          Int     @id @default(autoincrement())
+  title       String  @db.VarChar(255)
+  // description String  @db.VarChar(255)
+  method      String  @db.VarChar(255)
+  function    String  @db.VarChar(255)
+  genre       String  @db.VarChar(255)
+  source      String? @db.VarChar(255)
+  page        Int?
+  rating      Int
+  ingredients String  @db.MediumText
+  recipe      String  @db.MediumText
+}
