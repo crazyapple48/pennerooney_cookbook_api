@@ -1,12 +1,32 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sequelize = void 0;
 const morgan_1 = __importDefault(require("morgan"));
-const joi_1 = __importDefault(require("joi"));
+const recipe_1 = __importDefault(require("./routes/recipe"));
 const express_1 = __importDefault(require("express"));
+const sequelize_1 = require("sequelize");
 require("dotenv").config();
+const db_name = process.env.DB_NAME;
+const db_username = process.env.DB_USERNAME;
+const db_password = process.env.DB_PASSWORD;
+const db_port = process.env.DB_PORT;
+exports.sequelize = new sequelize_1.Sequelize(db_name, db_username, db_password, {
+    host: process.env.DB_HOST,
+    port: parseInt(db_port),
+    dialect: "mysql",
+});
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
@@ -14,108 +34,19 @@ if (app.get("env") === "development") {
     app.use((0, morgan_1.default)("tiny"));
     console.log("Morgan enabled");
 }
-const schema = joi_1.default.object({
-    Title: joi_1.default.string().min(3).required(),
-    Method: joi_1.default.string().required(),
-    Function: joi_1.default.string().required(),
-    Genre: joi_1.default.string().required(),
-    Source: joi_1.default.string().optional(),
-    Page: joi_1.default.number().optional(),
-    Rating: joi_1.default.number().min(1).max(5).required(),
-    Recipe: joi_1.default.string().required(),
-    Ingredients: joi_1.default.string().required(),
-});
-const recipes = [
-    {
-        id: 0,
-        Title: "Corn",
-        Method: "InstaPot",
-        Function: "Side",
-        Genre: "American",
-        Source: "Fresh from the Vegetarian Garden",
-        Page: 192,
-        Rating: 5,
-        Recipe: "List of instructions",
-        Ingredients: "List of ingredients",
-    },
-    {
-        id: 1,
-        Title: "Beans",
-        Method: "Pots",
-        Function: "Side",
-        Genre: "American",
-        Source: null,
-        Page: null,
-        Rating: 3,
-        Recipe: "List of instructions",
-        Ingredients: "List of ingredients",
-    },
-];
-app.get("/recipes", (req, res) => {
-    if (!recipes)
-        res.status(404).send("Recipes could not be found");
-    res.send(recipes);
-});
-app.get("/recipes/:id", (req, res) => {
-    const recipe = recipes.find((r) => r.id === parseInt(req.params.id));
-    if (!recipe)
-        return res.status(404).send("The recipe with given ID was not found");
-    res.send(recipe);
-});
-app.post("/recipes", (req, res) => {
-    const { error } = schema.validate(req.body);
-    if (error)
-        return res.status(400).send(error.details[0].message);
-    const recipe = {
-        id: recipes.length + 1,
-        Title: req.body.Title,
-        Method: req.body.Method,
-        Function: req.body.Function,
-        Genre: req.body.Genre,
-        Source: req.body.Source,
-        Page: req.body.Page,
-        Rating: req.body.Rating,
-        Recipe: req.body.Recipe,
-        Ingredients: req.body.Ingredients,
-    };
-    recipes.push(recipe);
-    res.send(recipe);
-});
-app.put("/recipes/:id", (req, res) => {
-    const recipe = recipes.find((r) => r.id === parseInt(req.params.id));
-    if (!recipe)
-        return res.status(404).send("The recipe with given ID was not found");
-    const { error } = schema.validate(req.body);
-    if (error)
-        return res.status(400).send(error.details[0].message);
-    if (recipe.Title)
-        recipe.Title = req.body.Title;
-    if (recipe.Method)
-        recipe.Method = req.body.Method;
-    if (recipe.Function)
-        recipe.Function = req.body.Function;
-    if (recipe.Genre)
-        recipe.Genre = req.body.Genre;
-    if (recipe.Source)
-        recipe.Source = req.body.Source;
-    if (recipe.Page)
-        recipe.Page = req.body.Page;
-    if (recipe.Rating)
-        recipe.Rating = req.body.Rating;
-    if (recipe.Recipe)
-        recipe.Recipe = req.body.Recipe;
-    if (recipe.Ingredients)
-        recipe.Ingredients = req.body.Ingredients;
-    res.send(recipe);
-});
-app.delete("/recipes/:id", (req, res) => {
-    const recipe = recipes.find((r) => r.id === parseInt(req.params.id));
-    if (!recipe)
-        return res.status(404).send("The recipe with given ID was not found");
-    const index = recipes.indexOf(recipe);
-    recipes.splice(index, 1);
-    res.send(recipe);
-});
+app.use("/recipes", recipe_1.default);
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on port ${port}...`));
+function start() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield exports.sequelize.authenticate();
+            app.listen(port, () => console.log(`Listening on port ${port}...`));
+        }
+        catch (err) {
+            console.error(err);
+            process.exit(1);
+        }
+    });
+}
+start();
 //# sourceMappingURL=index.js.map
