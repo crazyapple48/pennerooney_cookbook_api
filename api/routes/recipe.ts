@@ -1,7 +1,6 @@
 import express from "express";
 const router = express.Router();
 import Joi from "joi";
-import { Recipe, Method, Genre, Purpose, Source } from "../../models/models";
 
 const schema = Joi.object({
   title: Joi.string().min(3).required(),
@@ -59,47 +58,47 @@ const schema = Joi.object({
 //   res.send(recipe);
 // });
 
-router.post("/", async (req, res) => {
-  const { error } = schema.validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+// router.post("/", async (req, res) => {
+//   const { error } = schema.validate(req.body);
+//   if (error) return res.status(400).send(error.details[0].message);
 
-  const {
-    title,
-    method,
-    purpose,
-    genre,
-    source,
-    page,
-    rating,
-    recipe,
-    ingredients,
-  } = req.body;
+//   const {
+//     title,
+//     method,
+//     purpose,
+//     genre,
+//     source,
+//     page,
+//     rating,
+//     recipe,
+//     ingredients,
+//   } = req.body;
 
-  const [got_method, method_created] = await Method.findOrCreate({
-    where: { method: method },
-  });
-  const [got_purpose, purpose_created] = await Purpose.findOrCreate({
-    where: { purpose: purpose },
-  });
-  const [got_genre, genre_created] = await Genre.findOrCreate({
-    where: { genre: genre },
-  });
-  const [got_source, source_created] = await Source.findOrCreate({
-    where: { source: source },
-  });
+//   const [got_method, method_created] = await Method.findOrCreate({
+//     where: { method: method },
+//   });
+//   const [got_purpose, purpose_created] = await Purpose.findOrCreate({
+//     where: { purpose: purpose },
+//   });
+//   const [got_genre, genre_created] = await Genre.findOrCreate({
+//     where: { genre: genre },
+//   });
+//   const [got_source, source_created] = await Source.findOrCreate({
+//     where: { source: source },
+//   });
 
-  const new_recipe = await Recipe.create({
-    title: title,
-    methodId: got_method.id,
-    purposeId: got_purpose.id,
-    genreId: got_genre.id,
-    sourceId: got_source.id,
-    page: page,
-    rating: rating,
-    recipe: recipe,
-    ingredients: ingredients,
-  });
-});
+//   const new_recipe = await Recipe.create({
+//     title: title,
+//     methodId: got_method.id,
+//     purposeId: got_purpose.id,
+//     genreId: got_genre.id,
+//     sourceId: got_source.id,
+//     page: page,
+//     rating: rating,
+//     recipe: recipe,
+//     ingredients: ingredients,
+//   });
+// });
 
 // router.put("/:id", async (req, res) => {
 //   const recipe = await prisma.recipe.findUnique({
