@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Method {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  method    String   @unique
+  Recipe    Recipe[]
+}
+
+model Genre {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  genre     String   @unique
+  Recipe    Recipe[]
+}
+
+model Source {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  source         String   @unique
+  hasManyRecipes Boolean
+  Recipe         Recipe[]
+}
+
+model Purpose {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  purpose   String   @unique
+  Recipe    Recipe[]
+}
+
+model Recipe {
+  id           Int      @id @default(autoincrement())
+  createAt     DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  title        String
+  page         Int
+  rating       Int
+  recipe       String   @db.MediumText
+  ingredients  String   @db.MediumText
+  nickelaLevel Int
+  method       Method   @relation(fields: [methodId], references: [id])
+  genre        Genre    @relation(fields: [genreId], references: [id])
+  source       Source   @relation(fields: [sourceId], references: [id])
+  purpose      Purpose  @relation(fields: [purposeId], references: [id])
+  methodId     Int
+  genreId      Int
+  sourceId     Int
+  purposeId    Int
+}
