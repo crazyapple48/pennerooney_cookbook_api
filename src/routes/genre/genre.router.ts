@@ -53,8 +53,8 @@ genreRouter.post("/", async (req: Request, res: Response) => {
   }
 });
 
-// PUT: Update a method
-// Params: method
+// PUT: Update a genre
+// Params: genre
 genreRouter.put("/:id", async (req: Request, res: Response) => {
   const { error, value } = schema.validate(req.body);
   if (error) {
@@ -63,8 +63,8 @@ genreRouter.put("/:id", async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
     const genre = req.body;
-    const updatedMethod = await GenreService.updateGenre(genre, id);
-    return res.status(200).send(updatedMethod);
+    const updatedGenre = await GenreService.updateGenre(genre, id);
+    return res.status(200).send(updatedGenre);
   } catch (err: any) {
     return res.status(500).send(err.message);
   }
@@ -76,7 +76,7 @@ genreRouter.delete("/:id", async (req: Request, res: Response) => {
   const id: number = parseInt(req.params.id, 10);
   try {
     await GenreService.deleteGenre(id);
-    return res.status(204).send("Method has been successfully deleted");
+    return res.status(204).send("Genre has been successfully deleted");
   } catch (err: any) {
     return res.status(500).send(err.message);
   }

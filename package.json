@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "test": "jest --watchAll --verbose"
+    "test": "jest --watchAll"
   },
   "author": "crazyapple48",
   "license": "ISC",

@@ -30,7 +30,7 @@ purposeRouter.get("/:id", async (req: Request, res: Response) => {
     if (purpose) {
       return res.status(200).send(purpose);
     }
-    return res.status(404).send("Method could not be found");
+    return res.status(404).send("Purpose could not be found");
   } catch (err: any) {
     return res.status(500).send(err.message);
   }
