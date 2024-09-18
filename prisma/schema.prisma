@@ -51,11 +51,12 @@ model Recipe {
   createAt     DateTime @default(now())
   updatedAt    DateTime @updatedAt
   title        String
-  page         Int
+  page         Int?
   rating       Int
   recipe       String   @db.MediumText
   ingredients  String   @db.MediumText
   nickelaLevel Int
+  isFavorite   Boolean  @default(false)
   method       Method   @relation(fields: [methodId], references: [id])
   genre        Genre    @relation(fields: [genreId], references: [id])
   source       Source   @relation(fields: [sourceId], references: [id])
