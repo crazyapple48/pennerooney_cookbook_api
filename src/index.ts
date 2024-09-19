@@ -27,6 +27,8 @@ app.use("/genres", genreRouter);
 app.use("/purposes", purposeRouter);
 app.use("/sources", sourceRouter);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Listening on Port: ${PORT}`);
 });
+
+module.exports = server;

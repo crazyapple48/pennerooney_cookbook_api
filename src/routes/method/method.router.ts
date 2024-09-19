@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import Joi from "joi";
 
 import * as MethodService from "./method.service";
+import { matchedData, param, validationResult } from "express-validator";
 
 export const methodRouter = express.Router();
 
@@ -23,18 +24,25 @@ methodRouter.get("/", async (req: Request, res: Response) => {
 
 // GET: Single method by id
 // Params: id
-methodRouter.get("/:id", async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    const method = await MethodService.getMethod(id);
-    if (method) {
-      return res.status(200).send(method);
+methodRouter.get(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
     }
-    return res.status(404).send("Method could not be found");
-  } catch (err: any) {
-    return res.status(500).send(err.message);
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      const method = await MethodService.getMethod(parseInt(id));
+      if (!method) return res.status(404).send("Method could not be found");
+      return res.status(200).send(method);
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-});
+);
 
 // POST: new method
 // Params: method
@@ -55,29 +63,48 @@ methodRouter.post("/", async (req: Request, res: Response) => {
 
 // PUT: Update a method
 // Params: method
-methodRouter.put("/:id", async (req: Request, res: Response) => {
-  const { error, value } = schema.validate(req.body);
-  if (error) {
-    return res.status(400).send(error.message);
+methodRouter.put(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const { error, value } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).send(error.message);
+    }
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      const method = req.body;
+      const updatedMethod = await MethodService.updateMethod(method, id);
+      return res.status(200).send(updatedMethod);
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    const method = req.body;
-    const updatedMethod = await MethodService.updateMethod(method, id);
-    return res.status(200).send(updatedMethod);
-  } catch (err: any) {
-    return res.status(500).send(err.message);
-  }
-});
+);
 
 // DELETE: delete a method
 // Params: id
-methodRouter.delete("/:id", async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    await MethodService.deleteMethod(id);
-    return res.status(204).send("Method has been successfully deleted");
-  } catch (err: any) {
-    return res.status(500).send(err.message);
+methodRouter.delete(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      await MethodService.deleteMethod(id);
+      return res.status(204).send("Method has been successfully deleted");
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-});
+);
