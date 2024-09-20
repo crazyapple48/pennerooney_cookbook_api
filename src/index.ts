@@ -4,6 +4,7 @@ import { methodRouter } from "./routes/method/method.router";
 import { genreRouter } from "./routes/genre/genre.router";
 import { purposeRouter } from "./routes/purpose/purpose.router";
 import { sourceRouter } from "./routes/source_route/source.router";
+import { recipeRouter } from "./routes/recipe/recipe.router";
 require("dotenv").config();
 
 export const app = express();
@@ -26,6 +27,7 @@ app.use("/methods", methodRouter);
 app.use("/genres", genreRouter);
 app.use("/purposes", purposeRouter);
 app.use("/sources", sourceRouter);
+app.use("/recipes", recipeRouter);
 
 const server = app.listen(PORT, () => {
   console.log(`Listening on Port: ${PORT}`);
