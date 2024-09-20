@@ -7,7 +7,9 @@
     "seed": "node --require esbuild-register prisma/seed.ts"
   },
   "scripts": {
+    "dev:seed": "dotenv -e .env.development -- npx prisma db seed",
     "testdb": "dotenv -e .env.test -- npx prisma db push",
+    "devdb": "dotenv -e .env.development -- npx prisma db push",
     "migrate:mysql": "dotenv -e .env.development -- npx prisma migrate dev",
     "dev": "dotenv -e .env.development -- nodemon src/index.ts",
     "test": "dotenv -e .env.test -- jest --watchAll --runInBand"
