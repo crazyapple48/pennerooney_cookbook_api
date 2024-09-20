@@ -8,9 +8,6 @@ export type Source = {
 
 export const listSources = async (): Promise<Source[]> => {
   return db.source.findMany({
-    where: {
-      hasManyRecipes: true,
-    },
     select: {
       id: true,
       source: true,

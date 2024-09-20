@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import Joi from "joi";
 
 import * as SourceService from "./source.service";
+import { matchedData, param, validationResult } from "express-validator";
 
 export const sourceRouter = express.Router();
 
@@ -24,18 +25,27 @@ sourceRouter.get("/", async (req: Request, res: Response) => {
 
 // GET: Single source by id
 // Params: id
-sourceRouter.get("/:id", async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    const source = await SourceService.getSource(id);
-    if (source) {
-      return res.status(200).send(source);
+sourceRouter.get(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
     }
-    return res.status(404).send("Source could not be found");
-  } catch (err: any) {
-    return res.status(500).send(err.message);
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      const source = await SourceService.getSource(parseInt(id));
+      if (source) {
+        return res.status(200).send(source);
+      }
+      return res.status(404).send("Source could not be found");
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-});
+);
 
 // POST: new source
 // Params: source
@@ -56,29 +66,50 @@ sourceRouter.post("/", async (req: Request, res: Response) => {
 
 // PUT: Update a source
 // Params: source
-sourceRouter.put("/:id", async (req: Request, res: Response) => {
-  const { error, value } = schema.validate(req.body);
-  if (error) {
-    return res.status(400).send(error.message);
+sourceRouter.put(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    const { error, value } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).send(error.message);
+    }
+    try {
+      const source = req.body;
+      const updatedSource = await SourceService.updateSource(
+        source,
+        parseInt(id)
+      );
+      return res.status(200).send(updatedSource);
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    const source = req.body;
-    const updatedSource = await SourceService.updateSource(source, id);
-    return res.status(200).send(updatedSource);
-  } catch (err: any) {
-    return res.status(500).send(err.message);
-  }
-});
+);
 
 // DELETE: delete a source
 // Params: id
-sourceRouter.delete("/:id", async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    await SourceService.deleteSource(id);
-    return res.status(204).send("Source has been successfully deleted");
-  } catch (err: any) {
-    return res.status(500).send(err.message);
+sourceRouter.delete(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      await SourceService.deleteSource(parseInt(id));
+      return res.status(204).send("Source has been successfully deleted");
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-});
+);
