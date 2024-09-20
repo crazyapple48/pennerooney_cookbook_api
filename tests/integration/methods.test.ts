@@ -5,8 +5,15 @@ import { db } from "../../src/utils/db.server";
 let server: any;
 
 describe("/methods", () => {
+  let method: string;
+
+  const exec = (): Promise<{ body: any; status: any }> => {
+    return request(server).post("/methods").send({ method });
+  };
+
   beforeEach(() => {
     server = require("../../src/index");
+    method = "method1";
   });
   afterEach(async () => {
     server.close();
@@ -62,16 +69,16 @@ describe("/methods", () => {
   });
 
   describe("POST /", () => {
-    it("should return 400 if invalid object was sent", async () => {
-      const res = await request(server).post("/methods");
+    it("should return 400 if invalid method was sent", async () => {
+      method = "";
+
+      const res = await exec();
 
       expect(res.status).toBe(400);
     });
 
     it("Should save the method if it's valid", async () => {
-      const method = { method: "method1" };
-
-      const res = await request(server).post("/methods").send(method);
+      await exec();
 
       const check_method = db.method.findFirst({
         where: { method: "method1" },
@@ -81,9 +88,7 @@ describe("/methods", () => {
     });
 
     it("Should return the method if it's valid", async () => {
-      const method = { method: "method1" };
-
-      const res = await request(server).post("/methods").send(method);
+      const res = await exec();
 
       expect(res.body).toHaveProperty("id");
       expect(res.body).toHaveProperty("method", "method1");
@@ -134,7 +139,9 @@ describe("/methods", () => {
       expect(res.body).toHaveProperty("id");
       expect(res.body).toHaveProperty("method", "method2");
     });
+  });
 
+  describe("DELETE /:id", () => {
     it("Should return 400 if invalid ID", async () => {
       const res = await request(server).delete("/methods/i");
 

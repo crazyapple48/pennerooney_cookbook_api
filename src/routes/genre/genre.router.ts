@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import Joi from "joi";
 
 import * as GenreService from "./genre.service";
+import { matchedData, param, validationResult } from "express-validator";
 
 export const genreRouter = express.Router();
 
@@ -23,18 +24,27 @@ genreRouter.get("/", async (req: Request, res: Response) => {
 
 // GET: Single genre by id
 
-genreRouter.get("/:id", async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    const genre = await GenreService.getGenre(id);
-    if (genre) {
-      return res.status(200).send(genre);
+genreRouter.get(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
     }
-    return res.status(404).send("Genre could not be found");
-  } catch (err: any) {
-    return res.status(500).send(err.message);
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      const genre = await GenreService.getGenre(parseInt(id));
+      if (genre) {
+        return res.status(200).send(genre);
+      }
+      return res.status(404).send("Genre could not be found");
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-});
+);
 
 // POST: new genre
 
@@ -55,29 +65,47 @@ genreRouter.post("/", async (req: Request, res: Response) => {
 
 // PUT: Update a genre
 // Params: genre
-genreRouter.put("/:id", async (req: Request, res: Response) => {
-  const { error, value } = schema.validate(req.body);
-  if (error) {
-    return res.status(400).send(error.message);
+genreRouter.put(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const { error, value } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).send(error.message);
+    }
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      const genre = req.body;
+      const updatedGenre = await GenreService.updateGenre(genre, parseInt(id));
+      return res.status(200).send(updatedGenre);
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    const genre = req.body;
-    const updatedGenre = await GenreService.updateGenre(genre, id);
-    return res.status(200).send(updatedGenre);
-  } catch (err: any) {
-    return res.status(500).send(err.message);
-  }
-});
+);
 
 // DELETE: delete a genre
 // Params: id
-genreRouter.delete("/:id", async (req: Request, res: Response) => {
-  const id: number = parseInt(req.params.id, 10);
-  try {
-    await GenreService.deleteGenre(id);
-    return res.status(204).send("Genre has been successfully deleted");
-  } catch (err: any) {
-    return res.status(500).send(err.message);
+genreRouter.delete(
+  "/:id",
+  param("id").trim().notEmpty().isNumeric(),
+  async (req: Request, res: Response) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+      return res.status(400).send("Invalid ID");
+    }
+
+    const { id } = matchedData(req, { locations: ["params"] });
+    try {
+      await GenreService.deleteGenre(parseInt(id));
+      return res.status(204).send("Genre has been successfully deleted");
+    } catch (err: any) {
+      return res.status(500).send(err.message);
+    }
   }
-});
+);

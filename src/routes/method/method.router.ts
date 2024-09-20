@@ -80,7 +80,10 @@ methodRouter.put(
     const { id } = matchedData(req, { locations: ["params"] });
     try {
       const method = req.body;
-      const updatedMethod = await MethodService.updateMethod(method, id);
+      const updatedMethod = await MethodService.updateMethod(
+        method,
+        parseInt(id)
+      );
       return res.status(200).send(updatedMethod);
     } catch (err: any) {
       return res.status(500).send(err.message);

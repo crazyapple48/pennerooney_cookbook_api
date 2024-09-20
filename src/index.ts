@@ -6,13 +6,13 @@ import { purposeRouter } from "./routes/purpose/purpose.router";
 import { sourceRouter } from "./routes/source_route/source.router";
 require("dotenv").config();
 
-const app = express();
+export const app = express();
 
-if (!process.env.PORT) {
-  process.exit(1);
+let PORT: number = parseInt(process.env.PORT as string, 10) || 3000;
+
+if (process.env.NODE_ENV == "test") {
+  PORT = 0;
 }
-
-const PORT: number = parseInt(process.env.PORT as string, 10);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
