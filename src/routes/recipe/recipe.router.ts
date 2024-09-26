@@ -69,6 +69,7 @@ recipeRouter.post("/", async (req: Request, res: Response) => {
     const new_recipe = await RecipeService.createRecipe(recipe);
     return res.status(201).send(new_recipe);
   } catch (err: any) {
+    console.log(err);
     return res.status(500).send(err.message);
   }
 });

@@ -1,5 +1,6 @@
 import morgan from "morgan";
 import express from "express";
+import cors from "cors";
 import { methodRouter } from "./routes/method/method.router";
 import { genreRouter } from "./routes/genre/genre.router";
 import { purposeRouter } from "./routes/purpose/purpose.router";
@@ -16,6 +17,7 @@ if (process.env.NODE_ENV == "test") {
 }
 
 app.use(express.json());
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.urlencoded({ extended: true }));
 if (app.get("env") === "development") {
   app.use(morgan("tiny"));

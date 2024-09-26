@@ -122,8 +122,9 @@ export const getRecipe = async (id: number): Promise<RecipeRead | null> => {
 };
 
 export const createRecipe = async (
-  new_recipe: Omit<RecipeWrite, "id">
+  new_recipe: Omit<RecipeWrite, "id" & "isFavorite">
 ): Promise<RecipeRead> => {
+  console.log(new_recipe);
   const {
     title,
     page,
@@ -131,7 +132,6 @@ export const createRecipe = async (
     recipe,
     ingredients,
     nickelaLevel,
-    isFavorite,
     methodId,
     genreId,
     sourceId,
@@ -145,7 +145,6 @@ export const createRecipe = async (
       recipe,
       ingredients,
       nickelaLevel,
-      isFavorite,
       methodId,
       genreId,
       sourceId,
