@@ -15,10 +15,14 @@ const schema = Joi.object({
   ingredients: Joi.string(),
   nickelaLevel: Joi.number().integer().positive(),
   isFavorite: Joi.boolean(),
-  methodId: Joi.number().integer().positive(),
-  sourceId: Joi.number().integer().positive(),
-  purposeId: Joi.number().integer().positive(),
-  genreId: Joi.number().integer().positive(),
+  method: { id: Joi.number().integer().positive(), method: Joi.string() },
+  source: {
+    id: Joi.number().integer().positive(),
+    source: Joi.string(),
+    hasManyRecipes: Joi.boolean(),
+  },
+  purpose: { id: Joi.number().integer().positive(), purpose: Joi.string() },
+  genre: { id: Joi.number().integer().positive(), genre: Joi.string() },
 });
 
 // GET: List of all recipes

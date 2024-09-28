@@ -122,7 +122,7 @@ export const getRecipe = async (id: number): Promise<RecipeRead | null> => {
 };
 
 export const createRecipe = async (
-  new_recipe: Omit<RecipeWrite, "id" & "isFavorite">
+  new_recipe: Omit<RecipeRead, "id" & "isFavorite">
 ): Promise<RecipeRead> => {
   console.log(new_recipe);
   const {
@@ -132,10 +132,10 @@ export const createRecipe = async (
     recipe,
     ingredients,
     nickelaLevel,
-    methodId,
-    genreId,
-    sourceId,
-    purposeId,
+    method,
+    genre,
+    source,
+    purpose,
   } = new_recipe;
   return db.recipe.create({
     data: {
@@ -145,10 +145,26 @@ export const createRecipe = async (
       recipe,
       ingredients,
       nickelaLevel,
-      methodId,
-      genreId,
-      sourceId,
-      purposeId,
+      method: {
+        connect: {
+          id: method.id,
+        },
+      },
+      genre: {
+        connect: {
+          id: genre.id,
+        },
+      },
+      source: {
+        connect: {
+          id: source.id,
+        },
+      },
+      purpose: {
+        connect: {
+          id: purpose.id,
+        },
+      },
     },
     select: {
       id: true,
