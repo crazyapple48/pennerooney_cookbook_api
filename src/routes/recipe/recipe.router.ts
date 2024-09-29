@@ -9,7 +9,7 @@ export const recipeRouter = express.Router();
 
 const schema = Joi.object({
   title: Joi.string(),
-  page: Joi.number().integer().positive(),
+  page: Joi.number().integer().min(0),
   rating: Joi.number().integer().positive(),
   recipe: Joi.string(),
   ingredients: Joi.string(),

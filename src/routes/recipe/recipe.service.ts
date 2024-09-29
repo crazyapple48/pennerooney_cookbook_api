@@ -205,7 +205,7 @@ export const createRecipe = async (
 };
 
 export const updateRecipe = async (
-  old_recipe: Omit<RecipeWrite, "id">,
+  old_recipe: Omit<RecipeRead, "id">,
   id: number
 ): Promise<RecipeRead> => {
   const {
@@ -216,10 +216,10 @@ export const updateRecipe = async (
     ingredients,
     nickelaLevel,
     isFavorite,
-    methodId,
-    purposeId,
-    genreId,
-    sourceId,
+    method,
+    purpose,
+    genre,
+    source,
   } = old_recipe;
 
   return db.recipe.update({
@@ -234,10 +234,26 @@ export const updateRecipe = async (
       ingredients,
       nickelaLevel,
       isFavorite,
-      methodId,
-      purposeId,
-      genreId,
-      sourceId,
+      method: {
+        connect: {
+          id: method.id,
+        },
+      },
+      purpose: {
+        connect: {
+          id: purpose.id,
+        },
+      },
+      genre: {
+        connect: {
+          id: genre.id,
+        },
+      },
+      source: {
+        connect: {
+          id: source.id,
+        },
+      },
     },
     select: {
       id: true,
