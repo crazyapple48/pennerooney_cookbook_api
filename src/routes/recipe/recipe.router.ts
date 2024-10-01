@@ -30,9 +30,10 @@ const schema = Joi.object({
 recipeRouter.get("/", async (req: Request, res: Response) => {
   try {
     const recipes = await RecipeService.listRecipes();
-    return res.status(200).send(recipes);
+    return res.status(200).json(recipes);
   } catch (err: any) {
-    return res.status(500).send(err.message);
+    console.error(err);
+    return res.status(500).json(err.message);
   }
 });
 
